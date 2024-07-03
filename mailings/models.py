@@ -66,7 +66,11 @@ class Mailing(models.Model):
         default=CREATED,
         verbose_name="Статус рассылки"
     )
-    clients = models.ManyToManyField(Client, related_name='mailing', verbose_name="Клиенты для рассылки")
+    clients = models.ManyToManyField(
+        Client, related_name='mailing',
+        verbose_name='Клиенты для рассылки',
+        help_text='Для выбора нескольких клиентов удерживате CTRL'
+    )
     message = models.ForeignKey(Message, verbose_name='Cообщение', on_delete=models.CASCADE, **NULLABLE)
     owner = models.ForeignKey(User, verbose_name='Владелец',  on_delete=models.SET_NULL, **NULLABLE)
 

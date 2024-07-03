@@ -1,6 +1,6 @@
-from django.forms import BooleanField, ModelForm, DateTimeField, DateInput
+from django.forms import BooleanField, ModelForm
 
-from mailings.models import Mailing
+from mailings.models import Mailing, Message, Client
 
 
 class StyleFormMixin:
@@ -15,7 +15,18 @@ class StyleFormMixin:
 
 
 class MailingForm(StyleFormMixin, ModelForm):
-
     class Meta:
         model = Mailing
-        exclude = ("owner",)
+        exclude = ('owner', 'status')
+
+
+class MessageForm(StyleFormMixin, ModelForm):
+    class Meta:
+        model = Message
+        exclude = ('owner',)
+
+
+class ClientForm(StyleFormMixin, ModelForm):
+    class Meta:
+        model = Client
+        exclude = ('owner',)

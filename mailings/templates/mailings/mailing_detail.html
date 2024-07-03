@@ -1,0 +1,56 @@
+{% extends 'mailings/index.html' %}
+{% block content %}
+
+<div class="container mt-4">
+    <div class="col-12">
+        <div class="row">
+            <div class="col-1"></div>
+            <div class="col-10">
+                <div class="card text-center">
+                    <div class="card-header">
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th scope="col">Заголовок рассылки</th>
+                                <th scope="col">Периодичность</th>
+                                <th scope="col">С</th>
+                                <th scope="col">По</th>
+                                <th scope="col">Статус</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <th scope="row">{{ mailing.message }}</th>
+                                <td>{{ mailing.periodicity }}</td>
+                                <td>{{ mailing.start_mailing }}</td>
+                                <td>{{ mailing.end_mailing }}</td>
+                                <td>{{ mailing.status }}</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="card-body">
+                        <h5>Текст сообщения</h5>
+                        {{ mailing.message.text }}
+                    </div>
+                    <div class="card-footer">
+                        <h5>Контакты</h5>
+                        {% for client in object.clients.all %}
+                        {{ client.name }} - {{ client.email }}
+                        <br>
+                        {% endfor %}
+                        <br>
+                        <div class="btn-group mt-4">
+                            <a href="{% url 'mailings:mailing_list' %}" type="submit"
+                               class="btn btn-outline-dark">Назад</a>
+                            <a class="p-2 btn btn-outline-dark" href="{% url 'mailings:mailing_delete' mailing.pk %}">Удалить</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-1"></div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

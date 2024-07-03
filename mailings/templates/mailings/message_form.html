@@ -10,9 +10,9 @@
                     <div class="card-header">
                         <h3>
                             {% if object %}
-                            Редактировать рассылку
+                            Редактировать сообщение
                             {% else %}
-                            Новая рассылка
+                            Новое сообщение
                             {% endif %}
                         </h3>
                     </div>
@@ -20,8 +20,7 @@
                         {% csrf_token %}
                         {{ form.as_p }}
                         <div class="btn-group">
-                            <a href="{% url 'mailings:client_create' %}" type="submit" class="btn btn-outline-dark">< Назад</a>
-                            <button type="submit" class="btn btn-outline-dark">Сохранить</button>
+                            <button type="submit" class="btn btn-outline-dark">Далее ></button>
                         </div>
                     </div>
                     <div class="card-footer">

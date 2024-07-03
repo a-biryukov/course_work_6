@@ -7,9 +7,8 @@
             <div class="col-3"></div>
             <div class="col-3"></div>
             <div class="col-3">
-                <a href="{% url 'mailings:mailing_create' %}">
-                    <button type="submit" class="btn btn-outline-dark">Создать рассылку</button>
-                </a>
+                <a href="{% url 'mailings:message_create' %}" type="submit" class="btn btn-outline-dark">Создать
+                    рассылку</a>
             </div>
         </div>
     </div>
@@ -33,13 +32,17 @@
                         </thead>
                         <tbody>
                         {% for mailing in object_list %}
-                        <tr>
-                            <th scope="row">{{ mailing.message }}</th>
-                            <td>{{ mailing.periodicity }}</td>
-                            <td>{{ mailing.start_mailing }}</td>
-                            <td>{{ mailing.end_mailing }}</td>
-                            <td>{{ mailing.status }}</td>
-                        </tr>
+
+                            <tr>
+
+                                <th scope="row">{{ mailing.message }}</th>
+                                <td>{{ mailing.periodicity }}</td>
+                                <td>{{ mailing.start_mailing }}</td>
+                                <td>{{ mailing.end_mailing }}</td>
+                                <td>{{ mailing.status }}</td>
+                                <td><a class="p-2 btn btn-outline-dark" href="{% url 'mailings:mailing_detail' mailing.pk %}">Посмотреть</a></td>
+                            </tr>
+
                         {% endfor %}
                         </tbody>
                     </table>
