@@ -10,9 +10,9 @@
             <h3><a href="/" class="nav-link px-2 text-white">Postman</a></h3>
 
             <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
-
                 <li><a href="{% url 'mailings:mailing_list' %}" class="nav-link px-2 text-white">Рассылки</a></li>
-                <li><a href="#" class="nav-link px-2 text-white">Контакты</a></li>
+                <li><a href="{% url 'mailings:client_list' %}" class="nav-link px-2 text-white">Контакты</a></li>
+                <li><a href="{% url 'mailings:message_list' %}" class="nav-link px-2 text-white">Сообщения</a></li>
             </ul>
 
             <div class="text-end">

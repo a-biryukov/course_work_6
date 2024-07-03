@@ -1,0 +1,39 @@
+{% extends 'mailings/index.html' %}
+{% block content %}
+
+<div class="container mt-4">
+    <div class="col-12">
+        <div class="row">
+            <div class="col-1"></div>
+            <div class="col-10">
+                <div class="card text-center">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th scope="col">Имя</th>
+                            <th scope="col">Почта</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for client in object_list %}
+                        <tr>
+                            <th scope="row">{{ client.email }}</th>
+                            <td>{{ client.name }}</td>
+                            <td>
+                                <div class="btn-group">
+                                    <a class="p-2 btn btn-outline-dark" href="{% url 'mailings:client_update' client.pk %}">Редактировать</a>
+                                    <a class="p-2 btn btn-outline-dark" href="{% url 'mailings:client_delete' client.pk %}">Удалить</a>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="col-1"></div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
