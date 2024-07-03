@@ -20,7 +20,11 @@
                         {% csrf_token %}
                         {{ form.as_p }}
                         <div class="btn-group">
-                            <a href="{% url 'mailings:client_create' %}" type="submit" class="btn btn-outline-dark">< Назад</a>
+                            {% if object %}
+                            <a href="{% url 'mailings:mailing_detail' mailing.pk %}" type="submit" class="btn btn-outline-dark">Назад</a>
+                            {% else %}
+                            <a href="{% url 'mailings:client_create' %}" type="submit" class="btn btn-outline-dark">Назад</a>
+                            {% endif %}
                             <button type="submit" class="btn btn-outline-dark">Сохранить</button>
                         </div>
                     </div>

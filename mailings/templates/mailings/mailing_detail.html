@@ -11,7 +11,7 @@
                         <table class="table">
                             <thead>
                             <tr>
-                                <th scope="col">Заголовок рассылки</th>
+                                <th scope="col">Тема сообщения</th>
                                 <th scope="col">Периодичность</th>
                                 <th scope="col">С</th>
                                 <th scope="col">По</th>
@@ -39,10 +39,10 @@
                         {{ client.name }} - {{ client.email }}
                         <br>
                         {% endfor %}
-                        <br>
+
                         <div class="btn-group mt-4">
-                            <a href="{% url 'mailings:mailing_list' %}" type="submit"
-                               class="btn btn-outline-dark">Назад</a>
+                            <a href="{% url 'mailings:mailing_list' %}" type="submit" class="btn btn-outline-dark">Назад</a>
+                            <a class="p-2 btn btn-outline-dark" href="{% url 'mailings:mailing_update' mailing.pk %}">Редактировать</a>
                             <a class="p-2 btn btn-outline-dark" href="{% url 'mailings:mailing_delete' mailing.pk %}">Удалить</a>
                         </div>
                     </div>
