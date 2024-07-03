@@ -1,4 +1,4 @@
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from django import forms
 
 from mailings.forms import StyleFormMixin
@@ -9,7 +9,14 @@ class UserRegisterForm(StyleFormMixin, UserCreationForm):
 
     class Meta:
         model = User
-        fields = ("email", "password1", "password1")
+        fields = ('email', 'password1', 'password1')
+
+
+class UserUpdateForm(StyleFormMixin, UserChangeForm):
+
+    class Meta:
+        model = User
+        fields = ('email',)
 
 
 class RecoveryForm(StyleFormMixin, forms.Form):

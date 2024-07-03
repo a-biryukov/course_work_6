@@ -17,9 +17,8 @@
 
             <div class="text-end">
                 {% if user.is_authenticated %}
-                <a href="{% url 'users:logout' %}">
-                    <button type="button" class="btn btn-outline-light me-2">Выйти</button>
-                </a>
+                <a href="{% url 'users:user_detail' user.pk %}" class="btn btn-outline-light me-2">Профиль</a>
+                <a href="{% url 'users:logout' %}" class="btn btn-outline-light me-2">Выйти</a>
                 {% else %}
                 <a href="{% url 'users:login' %}">
                     <button type="button" class="btn btn-outline-light me-2">Войти</button>
