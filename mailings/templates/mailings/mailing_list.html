@@ -1,0 +1,54 @@
+{% extends 'mailings/index.html' %}
+{% block content %}
+<div class="container mt-4">
+    <div class="col-12">
+        <div class="row">
+            <div class="col-3"></div>
+            <div class="col-3"></div>
+            <div class="col-3"></div>
+            <div class="col-3">
+                <a href="{% url 'mailings:mailing_create' %}">
+                    <button type="submit" class="btn btn-outline-dark">Создать рассылку</button>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container mt-4">
+    <div class="col-12">
+        <div class="row">
+            <div class="col-1"></div>
+            <div class="col-10">
+                <div class="card text-center">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th scope="col">Заголовок рассылки</th>
+                            <th scope="col">Периодичность</th>
+                            <th scope="col">С</th>
+                            <th scope="col">По</th>
+                            <th scope="col">Статус</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for mailing in object_list %}
+                        <tr>
+                            <th scope="row">{{ mailing.message }}</th>
+                            <td>{{ mailing.periodicity }}</td>
+                            <td>{{ mailing.start_mailing }}</td>
+                            <td>{{ mailing.end_mailing }}</td>
+                            <td>{{ mailing.status }}</td>
+                        </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="col-1"></div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}

@@ -74,8 +74,8 @@ class Mailing(models.Model):
         return f'{self.periodicity} c {self.start_mailing} по {self.end_mailing}, рассылка {self.status}'
 
     class Meta:
-        verbose_name = 'Сообщение'
-        verbose_name_plural = 'Сообщения'
+        verbose_name = 'Рассылка'
+        verbose_name_plural = 'Рассылки'
 
 
 class Log(models.Model):
