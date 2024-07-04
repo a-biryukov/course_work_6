@@ -19,5 +19,5 @@ class UserUpdateForm(StyleFormMixin, UserChangeForm):
         fields = ('email',)
 
 
-class RecoveryForm(StyleFormMixin, forms.Form):
+class PasswordRecoveryForm(StyleFormMixin, forms.Form):
     email = forms.EmailField(max_length=255)
