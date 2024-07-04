@@ -3,6 +3,7 @@ from django.shortcuts import redirect, get_object_or_404
 from django.urls import reverse_lazy, reverse
 from django.views.generic import CreateView, TemplateView, DetailView, UpdateView, DeleteView
 
+from mailings.services import email_send
 from users.forms import UserRegisterForm, UserUpdateForm, PasswordRecoveryForm
 from users.models import User
 
@@ -19,7 +20,7 @@ class UserCreateView(CreateView):
         user.save()
         host = self.request.get_host()
         url = f'http://{host}/users/email-confirm/{user.token}/'
-        user.email_send(subject="Подтверждение почты", message=f'Перейдите по ссылке для подтверждения почты {url}')
+        email_send(user, url=url)
         return super().form_valid(form)
 
 
@@ -49,7 +50,7 @@ class PasswordRecoveryTemplateView(TemplateView):
             user = User.objects.get(email=email)
             password = user.set_password()
             user.save()
-            user.email_send(subject='Восстановление пароля', message=f'Ваш новый пароль: {password}')
+            email_send(user, password=password)
         return redirect(self.success_url)
 
     def get_context_data(self, **kwargs):

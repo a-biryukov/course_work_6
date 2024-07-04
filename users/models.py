@@ -22,14 +22,6 @@ class User(AbstractUser):
     def __str__(self):
         return self.email
 
-    def email_send(self, subject, message):
-        send_mail(
-            subject=subject,
-            message=message,
-            from_email=EMAIL_HOST_USER,
-            recipient_list=[self.email]
-        )
-
     def make_token(self):
         self.token = secrets.token_hex(16)
 

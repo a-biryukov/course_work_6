@@ -1,6 +1,7 @@
+from django.core.mail import send_mail
 from django.db import models
 
-from config.settings import NULLABLE
+from config.settings import NULLABLE, EMAIL_HOST_USER
 from users.models import User
 
 
@@ -67,7 +68,7 @@ class Mailing(models.Model):
         verbose_name="Статус рассылки"
     )
     clients = models.ManyToManyField(
-        Client, related_name='mailing',
+        Client, related_name='clients',
         verbose_name='Клиенты для рассылки',
         help_text='Для выбора нескольких клиентов удерживате CTRL'
     )
@@ -94,3 +95,5 @@ class Log(models.Model):
     class Meta:
         verbose_name = "Попытка рассылки"
         verbose_name_plural = "Попытки рассылки"
+
+
