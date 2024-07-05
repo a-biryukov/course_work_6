@@ -22,11 +22,10 @@
                         <div class="btn-group">
                             {% if object %}
                             <a href="{% url 'mailings:client_list' %}" type="submit" class="btn btn-outline-dark">Назад</a>
-                            <button type="submit" class="btn btn-outline-dark">Сохранить</button>
                             {% else %}
-                            <a href="{% url 'mailings:message_create' %}" type="submit" class="btn btn-outline-dark">Назад</a>
-                            <button type="submit" class="btn btn-outline-dark">Далее</button>
+                            <a href="{% url 'mailings:client_list' %}" type="submit" class="btn btn-outline-dark">Назад</a>
                             {% endif %}
+                            <button type="submit" class="btn btn-outline-dark">Сохранить</button>
                         </div>
                     </div>
                     <div class="card-footer">

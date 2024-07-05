@@ -1,14 +1,12 @@
 {% extends 'mailings/index.html' %}
 {% block content %}
+
 <div class="container mt-4">
     <div class="col-12">
         <div class="row">
-            <div class="col-3"></div>
-            <div class="col-3"></div>
-            <div class="col-3"></div>
+            <div class="col-9"></div>
             <div class="col-3">
-                <a href="{% url 'mailings:message_create' %}" type="submit" class="btn btn-outline-dark">Создать
-                    рассылку</a>
+                <a href="{% url 'mailings:mailing_create' %}" type="submit" class="btn btn-outline-dark">Создать рассылку</a>
             </div>
         </div>
     </div>
@@ -34,8 +32,7 @@
                         {% for mailing in object_list %}
 
                             <tr>
-
-                                <th scope="row">{{ mailing.message }}</th>
+                                <th scope="row">{{ mailing.message | truncatewords:5 }}</th>
                                 <td>{{ mailing.periodicity }}</td>
                                 <td>{{ mailing.start_mailing }}</td>
                                 <td>{{ mailing.end_mailing }}</td>
@@ -52,6 +49,5 @@
         </div>
     </div>
 </div>
-
 
 {% endblock %}

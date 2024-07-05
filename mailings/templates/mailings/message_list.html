@@ -4,6 +4,17 @@
 <div class="container mt-4">
     <div class="col-12">
         <div class="row">
+            <div class="col-9"></div>
+            <div class="col-3">
+                <a href="{% url 'mailings:message_create' %}" type="submit" class="btn btn-outline-dark">Создать сообщение</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container mt-4">
+    <div class="col-12">
+        <div class="row">
             <div class="col-1"></div>
             <div class="col-10">
                 <div class="card text-center">
@@ -18,8 +29,8 @@
                         {% for message in object_list %}
 
                         <tr>
-                            <th scope="row">{{ message.tittle }}</th>
-                            <td>{{ message.text | truncatewords:50 }}</td>
+                            <th scope="row">{{ message.tittle | truncatewords:5 }}</th>
+                            <td>{{ message.text | truncatewords:10 }}</td>
                             <td><a class="p-2 btn btn-outline-dark" href="{% url 'mailings:message_detail' message.pk %}">Посмотреть</a></td>
                         </tr>
 
