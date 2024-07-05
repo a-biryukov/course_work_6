@@ -25,6 +25,15 @@ class MailingCreateView(LoginRequiredMixin, CreateView):
     form_class = MailingForm
     success_url = reverse_lazy('mailings:mailing_list')
 
+    def form_valid(self, form):
+        if form.is_valid():
+            new_mailing = form.save()
+            user = self.request.user
+            new_mailing.owner = user
+            new_mailing.status = Mailing.CREATED
+            new_mailing.save()
+            return super().form_valid(form)
+
 
 class MailingDetailView(LoginRequiredMixin, DetailView):
     model = Mailing
@@ -56,7 +65,15 @@ class MessageListView(LoginRequiredMixin, ListView):
 class MessageCreateView(LoginRequiredMixin, CreateView):
     model = Message
     form_class = MessageForm
-    success_url = reverse_lazy('mailings:client_create')
+    success_url = reverse_lazy('mailings:message_list')
+
+    def form_valid(self, form):
+        if form.is_valid():
+            new_message = form.save()
+            user = self.request.user
+            new_message.owner = user
+            new_message.save()
+            return super().form_valid(form)
 
 
 class MessageDetailView(LoginRequiredMixin, DetailView):
@@ -89,7 +106,15 @@ class ClientListView(LoginRequiredMixin, ListView):
 class ClientCreateView(LoginRequiredMixin, CreateView):
     model = Client
     form_class = ClientForm
-    success_url = reverse_lazy('mailings:mailing_create')
+    success_url = reverse_lazy('mailings:client_list')
+
+    def form_valid(self, form):
+        if form.is_valid():
+            new_client = form.save()
+            user = self.request.user
+            new_client.owner = user
+            new_client.save()
+            return super().form_valid(form)
 
 
 class ClientUpdateView(LoginRequiredMixin, UpdateView):
