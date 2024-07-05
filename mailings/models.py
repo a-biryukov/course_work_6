@@ -1,12 +1,11 @@
-from django.core.mail import send_mail
 from django.db import models
 
-from config.settings import NULLABLE, EMAIL_HOST_USER
+from config.settings import NULLABLE
 from users.models import User
 
 
 class Client(models.Model):
-    email = models.EmailField(max_length=100, verbose_name='Почта', unique=True)
+    email = models.EmailField(max_length=100, verbose_name='Почта')
     name = models.CharField(max_length=100, verbose_name='Имя')
     comment = models.TextField(verbose_name='Комментарий', **NULLABLE)
     owner = models.ForeignKey(User, verbose_name='Владелец', on_delete=models.SET_NULL, **NULLABLE)
