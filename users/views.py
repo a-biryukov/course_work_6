@@ -1,4 +1,5 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.exceptions import PermissionDenied
 from django.shortcuts import redirect, get_object_or_404
 from django.urls import reverse_lazy, reverse
 from django.views.generic import CreateView, TemplateView, DetailView, UpdateView, DeleteView
@@ -27,16 +28,34 @@ class UserCreateView(CreateView):
 class UserDetailView(LoginRequiredMixin,DetailView):
     model = User
 
+    def get_object(self, queryset=None):
+        self.object = super().get_object(queryset)
+        if self.request.user.email == self.object.email or self.request.user.is_superuser:
+            return self.object
+        raise PermissionDenied
+
 
 class UserUpdateView(LoginRequiredMixin, UpdateView):
     model = User
     form_class = UserUpdateForm
     template_name = 'users/user_form.html'
 
+    def get_object(self, queryset=None):
+        self.object = super().get_object(queryset)
+        if self.request.user.email == self.object.email or self.request.user.is_superuser:
+            return self.object
+        raise PermissionDenied
+
 
 class UserDeleteView(LoginRequiredMixin, DeleteView):
     model = User
     success_url = reverse_lazy('users:register')
+
+    def get_object(self, queryset=None):
+        self.object = super().get_object(queryset)
+        if self.request.user.email == self.object.email or self.request.user.is_superuser:
+            return self.object
+        raise PermissionDenied
 
 
 class PasswordRecoveryTemplateView(TemplateView):
