@@ -1,0 +1,30 @@
+{% extends 'mailings/index.html' %}
+{% load my_tags %}
+{% block content %}
+
+<br>
+<div class="container">
+    <div class="card mb-3">
+        <div class="row g-0">
+            <div class="card-body">
+                <p style="font-size:20px" class="card-text"><b>{{ blog.tittle }}</b></p>
+                <p class="card-text"> {{ blog.text }}</p>
+                <img class="img-fluid" src="{{ blog.image | media_filter }}" alt="Товар">
+                <br>
+                <br>
+                <p class="card-text">Просмотры: {{ blog.views_count }}</p>
+                <div class="btn-group">
+                    <a class="p-2 btn btn-outline-dark" href="{% url 'blog:blog_list' %}">Назад</a>
+                    {% if perms.blog.can_edit_publication and perms.blog.can_edit_tittle and perms.blog.can_edit_text and perms.blog.can_edit_image or user == blog.author %}
+                    <a class="p-2 btn btn-outline-dark" href="{% url 'blog:blog_update' blog.pk %}">Редактировать</a>
+                    {% endif %}
+                    {% if user == blog.author %}
+                    <a class="p-2 btn btn-outline-dark" href="{% url 'blog:blog_delete' blog.pk %}">Удалить</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
