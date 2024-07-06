@@ -1,3 +1,5 @@
+from datetime import datetime, timedelta
+
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy, reverse
 from django.views.generic import CreateView, TemplateView, ListView, DetailView, DeleteView, UpdateView
@@ -31,6 +33,10 @@ class MailingCreateView(LoginRequiredMixin, CreateView):
             user = self.request.user
             new_mailing.owner = user
             new_mailing.status = Mailing.CREATED
+            if new_mailing.time_sending <= datetime.now().time() and new_mailing.start_mailing == datetime.now().date():
+                new_mailing.next_sending = new_mailing.start_mailing + timedelta(days=1)
+            else:
+                new_mailing.next_sending = new_mailing.start_mailing
             new_mailing.save()
             return super().form_valid(form)
 
@@ -46,10 +52,19 @@ class MailingUpdateView(LoginRequiredMixin, UpdateView):
     def get_success_url(self):
         return reverse('mailings:mailing_detail', args=[self.kwargs.get('pk')])
 
+    def form_valid(self, form):
+        mailing = form.save()
+        if mailing.end_mailing >= datetime.now().date() >= mailing.start_mailing:
+            mailing.next_sending = datetime.now().date()
+        elif mailing.end_mailing >= datetime.now().date() <= mailing.start_mailing:
+            mailing.next_sending = mailing.start_mailing
+        mailing.save()
+        return super().form_valid(form)
+
 
 class MailingDeleteView(LoginRequiredMixin, DeleteView):
     model = Mailing
-    success_url = reverse_lazy('mailing:mailing_list')
+    success_url = reverse_lazy('mailings:mailing_list')
 
 
 class MessageListView(LoginRequiredMixin, ListView):
