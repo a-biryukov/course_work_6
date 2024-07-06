@@ -1,16 +1,16 @@
-from datetime import datetime
+import smtplib
+from datetime import datetime, timedelta
 
-import pytz
 from apscheduler.schedulers.background import BackgroundScheduler
 from django.core.mail import send_mail
 
-from config.settings import EMAIL_HOST_USER, TIME_ZONE
-from mailings.models import Mailing
+from config.settings import EMAIL_HOST_USER
+from mailings.models import Mailing, Log
 from users.models import User
 
 
-def email_send(obj, password=None, url=None):
-    """Функция отправки сообщени по электронной почте"""
+def email_send(obj, password=None, url=None, fail_silently=True):
+    """Функция отправки сообщений по электронной почте"""
     if isinstance(obj, Mailing):
         clients = obj.clients.all()
         subject = obj.message.tittle
@@ -25,12 +25,15 @@ def email_send(obj, password=None, url=None):
         message = f'Перейдите по ссылке для подтверждения почты {url}'
         recipient_list = [obj.email]
 
-    send_mail(
+    server_response = send_mail(
         subject=subject,
         message=message,
         from_email=EMAIL_HOST_USER,
-        recipient_list=recipient_list
+        recipient_list=recipient_list,
+        fail_silently=fail_silently
     )
+    if not fail_silently:
+        return server_response
 
 
 def start():
@@ -41,18 +44,39 @@ def start():
 
 
 def send_mailing():
-    zone = pytz.timezone(TIME_ZONE)
-    current_datetime = datetime.now(zone)
-    mailings = Mailing.objects.filter(start_mailing__lte=current_datetime, end_mailing__gte=current_datetime)
-    mailings_completed = Mailing.objects.filter(end_mailing__lte=current_datetime).filter(
-        status__in=[Mailing.CREATED,Mailing.STARTED])
-
-    for mailing in mailings_completed:
-        mailing.status = Mailing.COMPLETED
-        mailing.save()
+    """Проверяет дату, время, отправляет сообщение, если нужно и сохраняет логи"""
+    current_date = datetime.now().date()
+    current_time = datetime.now().time()
+    mailings = Mailing.objects.filter(
+        start_mailing__lte=current_date,
+        end_mailing__gte=current_date
+    )
 
     for mailing in mailings:
-        if mailing.status != Mailing.STARTED:
+        if mailing.status != Mailing.STARTED and mailing.end_mailing >= current_date >= mailing.start_mailing :
             mailing.status = Mailing.STARTED
             mailing.save()
 
+        if mailing.next_sending == current_date and mailing.time_sending <= current_time:
+            try:
+                server_response = email_send(mailing, fail_silently=False)
+            except smtplib.SMTPException as e:
+                server_response = e
+                status = False
+            else:
+
+                if mailing.end_mailing == current_date and mailing.time_sending <= current_time:
+                    mailing.status = Mailing.COMPLETED
+                    mailing.save()
+
+                if mailing.periodicity == mailing.DAILY:
+                    mailing.next_sending += timedelta(days=1)
+                elif mailing.periodicity == mailing.WEEKLY:
+                    mailing.next_sending += timedelta(weeks=1)
+                elif mailing.periodicity == mailing.MONTHLY:
+                    mailing.next_sending += timedelta(days=30)
+                mailing.save()
+                status = True
+
+            finally:
+                Log.objects.create(status=status, server_response=server_response, mailing=mailing)

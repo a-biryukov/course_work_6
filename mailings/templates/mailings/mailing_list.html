@@ -25,6 +25,7 @@
                             <th scope="col">Периодичность</th>
                             <th scope="col">С</th>
                             <th scope="col">По</th>
+                            <th scope="col">Время отправки</th>
                             <th scope="col">Статус</th>
                         </tr>
                         </thead>
@@ -36,6 +37,7 @@
                                 <td>{{ mailing.periodicity }}</td>
                                 <td>{{ mailing.start_mailing }}</td>
                                 <td>{{ mailing.end_mailing }}</td>
+                                <td>{{ mailing.time_sending }}</td>
                                 <td>{{ mailing.status }}</td>
                                 <td><a class="p-2 btn btn-outline-dark" href="{% url 'mailings:mailing_detail' mailing.pk %}">Посмотреть</a></td>
                             </tr>

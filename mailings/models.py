@@ -1,3 +1,5 @@
+from datetime import timedelta, date
+
 from django.db import models
 
 from config.settings import NULLABLE
@@ -52,8 +54,13 @@ class Mailing(models.Model):
         (STARTED, 'Запущена'),
     ]
 
-    start_mailing = models.DateTimeField(verbose_name='Дата и время первой отправки')
-    end_mailing = models.DateTimeField(verbose_name='Дата и время окончания рассылки')
+    start_mailing = models.DateField(verbose_name='Дата начала рассылки', default=date.today())
+    end_mailing = models.DateField(
+        verbose_name='Дата окончания рассылки',
+        default=date.today() + timedelta(weeks=52, days=1)
+    )
+    time_sending = models.TimeField(verbose_name='Время отправки', default='12:00')
+    next_sending = models.DateField(verbose_name='Дата следующей отправки', **NULLABLE)
     periodicity = models.CharField(
         max_length=150,
         choices=PERIODICITY_CHOICES,
@@ -94,5 +101,3 @@ class Log(models.Model):
     class Meta:
         verbose_name = "Попытка рассылки"
         verbose_name_plural = "Попытки рассылки"
-
-
