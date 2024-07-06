@@ -31,7 +31,6 @@
                         </thead>
                         <tbody>
                         {% for mailing in object_list %}
-
                             <tr>
                                 <th scope="row">{{ mailing.message | truncatewords:5 }}</th>
                                 <td>{{ mailing.periodicity }}</td>
@@ -41,7 +40,6 @@
                                 <td>{{ mailing.status }}</td>
                                 <td><a class="p-2 btn btn-outline-dark" href="{% url 'mailings:mailing_detail' mailing.pk %}">Посмотреть</a></td>
                             </tr>
-
                         {% endfor %}
                         </tbody>
                     </table>

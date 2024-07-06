@@ -5,7 +5,7 @@ from django.core.exceptions import PermissionDenied
 from django.urls import reverse_lazy, reverse
 from django.views.generic import CreateView, TemplateView, ListView, DetailView, DeleteView, UpdateView
 
-from mailings.forms import MailingForm, MessageForm, ClientForm
+from mailings.forms import MailingForm, MessageForm, ClientForm, MailingModeratorForm
 from mailings.models import Mailing, Message, Client
 
 
@@ -29,7 +29,8 @@ class MailingListView(LoginRequiredMixin, ListView):
     def get_queryset(self, *args, **kwargs):
         user = self.request.user
         queryset = super().get_queryset(*args, **kwargs)
-        queryset = queryset.filter(owner=user)
+        if not user.groups.filter(name='Модератор').exists():
+            queryset = queryset.filter(owner=user)
         return queryset
 
 
@@ -57,7 +58,7 @@ class MailingDetailView(LoginRequiredMixin, DetailView):
 
     def get_object(self, queryset=None):
         self.object = super().get_object(queryset)
-        if self.request.user == self.object.owner or self.request.user.is_superuser:
+        if self.request.user == self.object.owner or self.request.user.groups.filter(name='Модератор').exists():
             return self.object
         raise PermissionDenied
 
@@ -69,6 +70,14 @@ class MailingUpdateView(LoginRequiredMixin, UpdateView):
     def get_success_url(self):
         return reverse('mailings:mailing_detail', args=[self.kwargs.get('pk')])
 
+    def get_form_class(self):
+        user = self.request.user
+        if user == self.object.owner:
+            return MailingForm
+        elif user.groups.filter(name='Модератор').exists():
+            return MailingModeratorForm
+        raise PermissionDenied
+
     def form_valid(self, form):
         mailing = form.save()
         if mailing.end_mailing >= datetime.now().date() >= mailing.start_mailing:
@@ -77,12 +86,6 @@ class MailingUpdateView(LoginRequiredMixin, UpdateView):
             mailing.next_sending = mailing.start_mailing
         mailing.save()
         return super().form_valid(form)
-
-    def get_object(self, queryset=None):
-        self.object = super().get_object(queryset)
-        if self.request.user == self.object.owner or self.request.user.is_superuser:
-            return self.object
-        raise PermissionDenied
 
 
 class MailingDeleteView(LoginRequiredMixin, DeleteView):
@@ -137,10 +140,10 @@ class MessageUpdateView(LoginRequiredMixin, UpdateView):
     def get_success_url(self):
         return reverse('mailings:message_detail', args=[self.kwargs.get('pk')])
 
-    def get_object(self, queryset=None):
-        self.object = super().get_object(queryset)
-        if self.request.user == self.object.owner or self.request.user.is_superuser:
-            return self.object
+    def get_form_class(self):
+        user = self.request.user
+        if user == self.object.owner:
+            return MessageForm
         raise PermissionDenied
 
 
@@ -184,10 +187,10 @@ class ClientUpdateView(LoginRequiredMixin, UpdateView):
     form_class = ClientForm
     success_url = reverse_lazy('mailings:client_list')
 
-    def get_object(self, queryset=None):
-        self.object = super().get_object(queryset)
-        if self.request.user == self.object.owner or self.request.user.is_superuser:
-            return self.object
+    def get_form_class(self):
+        user = self.request.user
+        if user == self.object.owner:
+            return ClientForm
         raise PermissionDenied
 
 

@@ -8,9 +8,12 @@
             <div class="col-10">
                 <div class="card text-center">
                     <div class="card-header">
+                        {% if not object.is_active %}
+                        <h3>Рассылка отключена модератором</h3>
+                        {% endif %}
                         <table class="table">
-                            <thead>
                             <tr>
+                                <thead>
                                 <th scope="col">Тема сообщения</th>
                                 <th scope="col">Периодичность</th>
                                 <th scope="col">С</th>
@@ -44,9 +47,12 @@
                             {% endfor %}
                         </ol>
                         <div class="btn-group mt-4">
-                            <a href="{% url 'mailings:mailing_list' %}" type="submit" class="btn btn-outline-dark">Назад</a>
-                            <a class="p-2 btn btn-outline-dark" href="{% url 'mailings:mailing_update' mailing.pk %}">Редактировать</a>
+                            <a href="{% url 'mailings:mailing_list' %}" type="submit"
+                               class="btn btn-outline-dark">Назад</a>
+                            <a class="p-2 btn btn-outline-dark" href="{% url 'mailings:mailing_update' mailing.pk %}">Изменить</a>
+                            {% if user == mailing.owner %}
                             <a class="p-2 btn btn-outline-dark" href="{% url 'mailings:mailing_delete' mailing.pk %}">Удалить</a>
+                            {% endif %}
                         </div>
                     </div>
                 </div>

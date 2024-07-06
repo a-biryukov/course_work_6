@@ -19,5 +19,12 @@ class UserUpdateForm(StyleFormMixin, UserChangeForm):
         fields = ('email',)
 
 
+class UserModeratorUpdateForm(StyleFormMixin, UserChangeForm):
+
+    class Meta:
+        model = User
+        fields = ('is_active',)
+
+
 class PasswordRecoveryForm(StyleFormMixin, forms.Form):
     email = forms.EmailField(max_length=255)

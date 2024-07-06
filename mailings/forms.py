@@ -17,7 +17,13 @@ class StyleFormMixin:
 class MailingForm(StyleFormMixin, ModelForm):
     class Meta:
         model = Mailing
-        exclude = ('owner', 'status', 'next_sending')
+        exclude = ('owner', 'status', 'next_sending', 'is_active')
+
+
+class MailingModeratorForm(StyleFormMixin, ModelForm):
+    class Meta:
+        model = Mailing
+        fields = ('is_active',)
 
 
 class MessageForm(StyleFormMixin, ModelForm):

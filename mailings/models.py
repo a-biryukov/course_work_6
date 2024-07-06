@@ -80,6 +80,7 @@ class Mailing(models.Model):
     )
     message = models.ForeignKey(Message, verbose_name='Cообщение', on_delete=models.CASCADE, **NULLABLE)
     owner = models.ForeignKey(User, verbose_name='Владелец',  on_delete=models.SET_NULL, **NULLABLE)
+    is_active = models.BooleanField(verbose_name='Активная', db_default=True)
 
     def __str__(self):
         return f'{self.periodicity} c {self.start_mailing} по {self.end_mailing}, рассылка {self.status}'
@@ -87,6 +88,10 @@ class Mailing(models.Model):
     class Meta:
         verbose_name = 'Рассылка'
         verbose_name_plural = 'Рассылки'
+        permissions = [
+            ('can_view_mailing', 'Can view mailing'),
+            ('can_disable_mailing', 'Can disable mailing'),
+        ]
 
 
 class Log(models.Model):

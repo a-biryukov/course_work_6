@@ -1,0 +1,43 @@
+{% extends 'mailings/index.html' %}
+{% block content %}
+
+<div class="container mt-4">
+    <div class="col-12">
+        <div class="row">
+            <div class="col-9"></div>
+            <div class="col-3">
+                <a href="{% url 'mailings:mailing_create' %}" type="submit" class="btn btn-outline-dark">Создать рассылку</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container mt-4">
+    <div class="col-12">
+        <div class="row">
+            <div class="col-4"></div>
+            <div class="col-4">
+                <div class="card text-center">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th scope="col">Пользователи</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for user in object_list %}
+                            <tr>
+                                <td>{{ user.email }}</td>
+                                <td><a class="p-2 btn btn-outline-dark" href="{% url 'users:user_update' user.pk %}">Изменить</a></td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="col-4"></div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

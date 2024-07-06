@@ -2,11 +2,21 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import PermissionDenied
 from django.shortcuts import redirect, get_object_or_404
 from django.urls import reverse_lazy, reverse
-from django.views.generic import CreateView, TemplateView, DetailView, UpdateView, DeleteView
+from django.views.generic import CreateView, TemplateView, DetailView, UpdateView, DeleteView, ListView
 
 from mailings.services import email_send
-from users.forms import UserRegisterForm, UserUpdateForm, PasswordRecoveryForm
+from users.forms import UserRegisterForm, UserUpdateForm, PasswordRecoveryForm, UserModeratorUpdateForm
 from users.models import User
+
+
+class UserListView(ListView):
+    model = User
+
+    def get_queryset(self, *args, **kwargs):
+        user = self.request.user
+        queryset = super().get_queryset(*args, **kwargs)
+        queryset = queryset.exclude(pk=user.pk)
+        return queryset
 
 
 class UserCreateView(CreateView):
@@ -40,10 +50,14 @@ class UserUpdateView(LoginRequiredMixin, UpdateView):
     form_class = UserUpdateForm
     template_name = 'users/user_form.html'
 
-    def get_object(self, queryset=None):
-        self.object = super().get_object(queryset)
-        if self.request.user.email == self.object.email or self.request.user.is_superuser:
-            return self.object
+    def get_form_class(self):
+        user = self.request.user
+        if user.email == self.object.email:
+            self.success_url = reverse('users:user_detail', args=[self.kwargs.get('pk')])
+            return UserUpdateForm
+        elif user.groups.filter(name='Модератор').exists():
+            self.success_url = reverse_lazy('users:user_list')
+            return UserModeratorUpdateForm
         raise PermissionDenied
 
 

@@ -14,7 +14,7 @@ class BlogListView(ListView):
     def get_queryset(self, *args, **kwargs):
         user = self.request.user
         queryset = super().get_queryset(*args, **kwargs)
-        if not user.groups.filter(name="Контент-менеджер").exists() and user.is_superuser is not True:
+        if not user.groups.filter(name='Контент-менеджер').exists() and user.is_superuser is not True:
             queryset = queryset.filter(is_published=True)
         return queryset
 
@@ -28,7 +28,7 @@ class BlogCreateView(LoginRequiredMixin, CreateView):
         if form.is_valid():
             new_blog = form.save()
             user = self.request.user
-            new_blog.owner = user
+            new_blog.author = user
             new_blog.slug = slugify(new_blog.tittle)
             new_blog.save()
             return super().form_valid(form)
@@ -41,7 +41,9 @@ class BlogDetailView(DetailView):
         self.object = super().get_object(queryset)
         self.object.views_count += 1
         self.object.save()
-        return self.object
+        if self.request.user == self.object.author or self.request.user.groups.filter(name='Модератор').exists():
+            return self.object
+        raise PermissionDenied
 
 
 class BlogUpdateView(LoginRequiredMixin, UpdateView):
@@ -53,18 +55,19 @@ class BlogUpdateView(LoginRequiredMixin, UpdateView):
 
     def get_form_class(self):
         user = self.request.user
-        if (
-              user.has_perm('blog.can_edit_publication') and
-              user.has_perm('blog.can_edit_tittle') and
-              user.has_perm('blog.can_edit_text') and
-              user.has_perm('blog.can_edit_image')
-        ):
+        if self.request.user.groups.filter(name='Модератор').exists():
             return BlogModeratorForm
         elif user == self.object.author:
             return BlogForm
         raise PermissionDenied
 
 
-class BlogDeleteView(DeleteView):
+class BlogDeleteView(LoginRequiredMixin, DeleteView):
     model = Blog
     success_url = reverse_lazy("blog:blog_list")
+
+    def get_object(self, queryset=None):
+        self.object = super().get_object(queryset)
+        if self.request.user == self.object.author:
+            return self.object
+        raise PermissionDenied
