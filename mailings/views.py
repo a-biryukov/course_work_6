@@ -12,6 +12,16 @@ from mailings.models import Mailing, Message, Client
 class MainTemplateView(TemplateView):
     template_name = 'mailings/main.html'
 
+    def get_context_data(self, **kwargs):
+        context_data = super().get_context_data()
+        count_mailings = Mailing.objects.count()
+        count_active_mailings = Mailing.objects.filter(status=Mailing.STARTED).count()
+        count_unic_clients = Client.objects.values_list('email').distinct().count()
+        context_data['count_mailings'] = count_mailings
+        context_data['count_active_mailings'] = count_active_mailings
+        context_data['count_unic_clients'] = count_unic_clients
+        return context_data
+
 
 class MailingListView(LoginRequiredMixin, ListView):
     model = Mailing

@@ -36,14 +36,14 @@ def email_send(obj, password=None, url=None, fail_silently=True):
         return server_response
 
 
-def start():
+def start() -> None:
     """Функция старта рассылок"""
     scheduler = BackgroundScheduler()
     scheduler.add_job(send_mailing, 'interval', seconds=10)
     scheduler.start()
 
 
-def send_mailing():
+def send_mailing() -> None:
     """
     Получает подходящие по дате рассылки, устанавливает статус 'Запущена' или 'Завершена',
     отправляет сообщения, устанавливает дату следующей отправки и сохраняет логи
@@ -66,7 +66,6 @@ def send_mailing():
                 status = False
             else:
                 change_date_next_sending(mailing)
-                print(mailing.next_sending)
                 status = True
             finally:
                 Log.objects.create(status=status, server_response=server_response, mailing=mailing)
