@@ -38,7 +38,7 @@ def email_send(obj, password=None, url=None, fail_silently=True):
         return server_response
 
 
-def start() -> None:
+def start_mailing() -> None:
     """Функция старта рассылок"""
     scheduler = BackgroundScheduler()
     scheduler.add_job(send_mailing, 'interval', seconds=10)

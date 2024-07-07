@@ -8,6 +8,6 @@ class MailingsConfig(AppConfig):
     name = 'mailings'
 
     def ready(self):
-        from mailings.services import start
+        from mailings.services import start_mailing
         sleep(2)
-        start()
+        start_mailing()
