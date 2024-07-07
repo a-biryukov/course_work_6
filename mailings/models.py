@@ -1,6 +1,7 @@
 from datetime import timedelta, date
 
 from django.db import models
+from django.utils import timezone
 
 from config.settings import NULLABLE
 from users.models import User
@@ -54,7 +55,7 @@ class Mailing(models.Model):
         (STARTED, 'Запущена'),
     ]
 
-    start_mailing = models.DateField(verbose_name='Дата начала рассылки', default=date.today())
+    start_mailing = models.DateField(verbose_name='Дата начала рассылки', default=timezone.now())
     end_mailing = models.DateField(
         verbose_name='Дата окончания рассылки',
         default=date.today() + timedelta(weeks=52, days=1)

@@ -1,12 +1,13 @@
 import smtplib
 from datetime import datetime, timedelta
 
+import pytz
 from apscheduler.schedulers.background import BackgroundScheduler
 from django.core.cache import cache
 from django.core.mail import send_mail
 
 from blog.models import Blog
-from config.settings import EMAIL_HOST_USER, CACHE_ENABLED
+from config.settings import EMAIL_HOST_USER, CACHE_ENABLED, TIME_ZONE
 from mailings.models import Mailing, Log
 from users.models import User
 
@@ -50,8 +51,10 @@ def send_mailing() -> None:
     Получает подходящие по дате рассылки, устанавливает статус 'Запущена' или 'Завершена',
     отправляет сообщения, устанавливает дату следующей отправки и сохраняет логи
     """
-    current_date = datetime.now().date()
-    current_time = datetime.now().time()
+    zone = pytz.timezone(TIME_ZONE)
+    current_datetime = datetime.now(zone)
+    current_date = current_datetime.date()
+    current_time = current_datetime.time()
 
     mailings = Mailing.objects.filter(
         start_mailing__lte=current_date,
@@ -75,8 +78,10 @@ def send_mailing() -> None:
 
 def make_status(obj) -> None:
     """Проверяет дату и устанавливает соответствующий статус 'Запущена' или 'Завершена'"""
-    current_date = datetime.now().date()
-    current_time = datetime.now().time()
+    zone = pytz.timezone(TIME_ZONE)
+    current_datetime = datetime.now(zone)
+    current_date = current_datetime.date()
+    current_time = current_datetime.time()
     start_date = obj.start_mailing
     end_date = obj.end_mailing
     time_sending = obj.time_sending

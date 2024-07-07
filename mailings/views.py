@@ -1,11 +1,12 @@
 from datetime import datetime, timedelta
-from itertools import chain
 
+import pytz
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import PermissionDenied
 from django.urls import reverse_lazy, reverse
 from django.views.generic import CreateView, TemplateView, ListView, DetailView, DeleteView, UpdateView
 
+from config.settings import TIME_ZONE
 from mailings.forms import MailingForm, MessageForm, ClientForm, MailingModeratorForm
 from mailings.models import Mailing, Message, Client, Log
 from mailings.services import make_status, get_blog_from_cache
@@ -48,7 +49,11 @@ class MailingCreateView(LoginRequiredMixin, CreateView):
             user = self.request.user
             mailing.owner = user
             make_status(mailing)
-            if mailing.time_sending <= datetime.now().time() and mailing.start_mailing == datetime.now().date():
+            zone = pytz.timezone(TIME_ZONE)
+            current_datetime = datetime.now(zone)
+            current_date = current_datetime.date()
+            current_time = current_datetime.time()
+            if mailing.time_sending <= current_time and mailing.start_mailing == current_date:
                 mailing.next_sending = mailing.start_mailing + timedelta(days=1)
             else:
                 mailing.next_sending = mailing.start_mailing
@@ -84,9 +89,12 @@ class MailingUpdateView(LoginRequiredMixin, UpdateView):
 
     def form_valid(self, form):
         mailing = form.save()
-        if mailing.end_mailing >= datetime.now().date() >= mailing.start_mailing:
-            mailing.next_sending = datetime.now().date()
-        elif mailing.end_mailing >= datetime.now().date() <= mailing.start_mailing:
+        zone = pytz.timezone(TIME_ZONE)
+        current_datetime = datetime.now(zone)
+        current_date = current_datetime.date()
+        if mailing.end_mailing >= current_date >= mailing.start_mailing:
+            mailing.next_sending = current_date
+        elif mailing.end_mailing >= current_date <= mailing.start_mailing:
             mailing.next_sending = mailing.start_mailing
         mailing.save()
         make_status(mailing)
