@@ -12,8 +12,8 @@
                         <h3>Рассылка отключена модератором</h3>
                         {% endif %}
                         <table class="table">
+                            <thead>
                             <tr>
-                                <thead>
                                 <th scope="col">Тема сообщения</th>
                                 <th scope="col">Периодичность</th>
                                 <th scope="col">С</th>
@@ -24,7 +24,7 @@
                             </thead>
                             <tbody>
                             <tr>
-                                <th scope="row">{{ mailing.message }}</th>
+                                <td>{{ mailing.message }}</td>
                                 <td>{{ mailing.periodicity }}</td>
                                 <td>{{ mailing.start_mailing }}</td>
                                 <td>{{ mailing.end_mailing }}</td>
@@ -43,7 +43,6 @@
                         <ol>
                             {% for client in object.clients.all %}
                             <li>{{ client.email }} - {{ client.name }}</li>
-
                             {% endfor %}
                         </ol>
                         <div class="btn-group mt-4">

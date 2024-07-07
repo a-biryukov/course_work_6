@@ -27,12 +27,13 @@
                             <th scope="col">По</th>
                             <th scope="col">Время отправки</th>
                             <th scope="col">Статус</th>
+                            <th scope="col"></th>
                         </tr>
                         </thead>
                         <tbody>
                         {% for mailing in object_list %}
                             <tr>
-                                <th scope="row">{{ mailing.message | truncatewords:5 }}</th>
+                                <td>{{ mailing.message | truncatewords:5 }}</td>
                                 <td>{{ mailing.periodicity }}</td>
                                 <td>{{ mailing.start_mailing }}</td>
                                 <td>{{ mailing.end_mailing }}</td>

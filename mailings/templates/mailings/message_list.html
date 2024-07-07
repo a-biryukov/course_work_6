@@ -23,17 +23,16 @@
                         <tr>
                             <th scope="col">Заголовок сообщения</th>
                             <th scope="col">Текст сообщения</th>
+                            <th scope="col"></th>
                         </tr>
                         </thead>
                         <tbody>
                         {% for message in object_list %}
-
                         <tr>
-                            <th scope="row">{{ message.tittle | truncatewords:5 }}</th>
+                            <td>{{ message.tittle | truncatewords:5 }}</td>
                             <td>{{ message.text | truncatewords:10 }}</td>
                             <td><a class="p-2 btn btn-outline-dark" href="{% url 'mailings:message_detail' message.pk %}">Посмотреть</a></td>
                         </tr>
-
                         {% endfor %}
                         </tbody>
                     </table>
@@ -43,6 +42,5 @@
         </div>
     </div>
 </div>
-
 
 {% endblock %}

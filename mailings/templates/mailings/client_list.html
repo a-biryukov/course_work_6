@@ -23,17 +23,17 @@
                         <tr>
                             <th scope="col">Почта</th>
                             <th scope="col">Имя</th>
+                            <th scope="col"></th>
                         </tr>
                         </thead>
                         <tbody>
                         {% for client in object_list %}
                         <tr>
-                            <th scope="row">{{ client.email }}</th>
+                            <td>{{ client.email }}</td>
                             <td>{{ client.name }}</td>
                             <td>
                                 <div class="btn-group">
-                                    <a class="p-2 btn btn-outline-dark" href="{% url 'mailings:client_update' client.pk %}">Изменить</a>
-                                    <a class="p-2 btn btn-outline-dark" href="{% url 'mailings:client_delete' client.pk %}">Удалить</a>
+                                    <a class="p-2 btn btn-outline-dark" href="{% url 'mailings:client_detail' client.pk %}">Посмотреть</a>
                                 </div>
                             </td>
                         </tr>
