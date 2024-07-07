@@ -122,7 +122,7 @@ def get_blog_from_cache():
 
 
 def get_date_next_sending(obj):
-    """Gjkexftn """
+    """Получение даты следующей отправки """
     zone = pytz.timezone(TIME_ZONE)
     current_datetime = datetime.now(zone)
     current_date = current_datetime.date()
