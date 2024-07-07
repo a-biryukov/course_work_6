@@ -53,7 +53,7 @@ class BlogUpdateView(LoginRequiredMixin, UpdateView):
 
     def get_form_class(self):
         user = self.request.user
-        if self.request.user.groups.filter(name='Модератор').exists():
+        if self.request.user.groups.filter(name='Контент-менеджер').exists():
             return BlogModeratorForm
         elif user == self.object.author:
             return BlogForm
