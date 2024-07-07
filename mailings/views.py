@@ -1,15 +1,11 @@
-from datetime import datetime, timedelta
-
-import pytz
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import PermissionDenied
 from django.urls import reverse_lazy, reverse
 from django.views.generic import CreateView, TemplateView, ListView, DetailView, DeleteView, UpdateView
 
-from config.settings import TIME_ZONE
 from mailings.forms import MailingForm, MessageForm, ClientForm, MailingModeratorForm
 from mailings.models import Mailing, Message, Client, Log
-from mailings.services import make_status, get_blog_from_cache
+from mailings.services import get_blog_from_cache, get_date_next_sending, get_status
 
 
 class MainTemplateView(TemplateView):
@@ -48,17 +44,9 @@ class MailingCreateView(LoginRequiredMixin, CreateView):
             mailing = form.save()
             user = self.request.user
             mailing.owner = user
-            make_status(mailing)
-            zone = pytz.timezone(TIME_ZONE)
-            current_datetime = datetime.now(zone)
-            current_date = current_datetime.date()
-            current_time = current_datetime.time()
-            if mailing.time_sending <= current_time and mailing.start_mailing == current_date:
-                mailing.next_sending = mailing.start_mailing + timedelta(days=1)
-            else:
-                mailing.next_sending = mailing.start_mailing
+            mailing.next_sending = get_date_next_sending(mailing)
+            mailing.status = get_status(mailing)
             mailing.save()
-            print(self.request)
             return super().form_valid(form)
 
 
@@ -89,15 +77,9 @@ class MailingUpdateView(LoginRequiredMixin, UpdateView):
 
     def form_valid(self, form):
         mailing = form.save()
-        zone = pytz.timezone(TIME_ZONE)
-        current_datetime = datetime.now(zone)
-        current_date = current_datetime.date()
-        if mailing.end_mailing >= current_date >= mailing.start_mailing:
-            mailing.next_sending = current_date
-        elif mailing.end_mailing >= current_date <= mailing.start_mailing:
-            mailing.next_sending = mailing.start_mailing
+        mailing.next_sending = get_date_next_sending(mailing)
+        mailing.status = get_status(mailing)
         mailing.save()
-        make_status(mailing)
         return super().form_valid(form)
 
 

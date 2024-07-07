@@ -62,7 +62,7 @@ def send_mailing() -> None:
     )
 
     for mailing in mailings:
-        make_status(mailing)
+        mailing.status = get_status(mailing)
         if mailing.next_sending == current_date and mailing.time_sending <= current_time:
             try:
                 server_response = email_send(mailing, fail_silently=False)
@@ -70,14 +70,15 @@ def send_mailing() -> None:
                 server_response = e
                 status = False
             else:
-                change_date_next_sending(mailing)
+                mailing.next_sending = change_date_next_sending(mailing)
                 status = True
             finally:
                 Log.objects.create(status=status, server_response=server_response, mailing=mailing)
+        mailing.save()
 
 
-def make_status(obj) -> None:
-    """Проверяет дату и устанавливает соответствующий статус 'Запущена' или 'Завершена'"""
+def get_status(obj) -> str:
+    """Проверяет дату и возвращает соответствующий статус 'Запущена' или 'Завершена'"""
     zone = pytz.timezone(TIME_ZONE)
     current_datetime = datetime.now(zone)
     current_date = current_datetime.date()
@@ -90,23 +91,21 @@ def make_status(obj) -> None:
             end_date > current_date == start_date and time_sending < current_time or
             end_date == current_date and time_sending > current_time or
             start_date == current_date and time_sending > current_time):
-        obj.status = Mailing.STARTED
+        return Mailing.STARTED
     elif end_date == current_date and current_time > time_sending or current_date > end_date:
-        obj.status = Mailing.COMPLETED
+        return Mailing.COMPLETED
     else:
-        obj.status = Mailing.CREATED
-    obj.save()
+        return Mailing.CREATED
 
 
-def change_date_next_sending(obj) -> None:
+def change_date_next_sending(obj):
     """Меняет дату следующей отправки в зависимости от выбранной пользователем периодичности"""
     if obj.periodicity == Mailing.DAILY:
-        obj.next_sending += timedelta(days=1)
+        return obj.next_sending + timedelta(days=1)
     elif obj.periodicity == Mailing.WEEKLY:
-        obj.next_sending += timedelta(weeks=1)
+        return obj.next_sending + timedelta(weeks=1)
     elif obj.periodicity == Mailing.MONTHLY:
-        obj.next_sending += timedelta(days=30)
-    obj.save()
+        return obj.next_sending + timedelta(days=30)
 
 
 def get_blog_from_cache():
@@ -120,3 +119,21 @@ def get_blog_from_cache():
         blog_list = Blog.objects.order_by('?')[:3]
         cache.set(key, blog_list)
     return blog_list
+
+
+def get_date_next_sending(obj):
+    """Gjkexftn """
+    zone = pytz.timezone(TIME_ZONE)
+    current_datetime = datetime.now(zone)
+    current_date = current_datetime.date()
+    current_time = current_datetime.time()
+    start_date = obj.start_mailing
+    end_date = obj.end_mailing
+    time_sending = obj.time_sending
+
+    if start_date > current_date:
+        return start_date
+    elif start_date <= current_date < end_date and time_sending < current_time:
+        return current_date + timedelta(days=1)
+    else:
+        return current_date
