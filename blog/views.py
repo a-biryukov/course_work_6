@@ -41,9 +41,7 @@ class BlogDetailView(DetailView):
         self.object = super().get_object(queryset)
         self.object.views_count += 1
         self.object.save()
-        if self.request.user == self.object.author or self.request.user.groups.filter(name='Модератор').exists():
-            return self.object
-        raise PermissionDenied
+        return self.object
 
 
 class BlogUpdateView(LoginRequiredMixin, UpdateView):
