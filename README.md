@@ -13,6 +13,7 @@
   + python manage.py loaddata fixtures/auth_data.json
   + python manage.py loaddata fixtures/users_data.json
 + Установить Redis и запустить
+  + sudo apt install redis-server
   + sudo service redis-server start
  + Запустите сервис
   + python manage.py runserver
