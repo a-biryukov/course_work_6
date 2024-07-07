@@ -1,4 +1,5 @@
 {% extends 'mailings/index.html' %}
+{% load my_tags %}
 {% block content %}
 
 <div id="carouselExampleCaptions" class="carousel slide">
@@ -48,6 +49,40 @@
         <span class="carousel-control-next-icon" aria-hidden="true"></span>
         <span class="visually-hidden">Следующий</span>
     </button>
+</div>
+
+<div class="album py-5 bg-body-tertiary">
+    <div class="container text-center">
+        <div class="col-12">
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+                {% for blog in blog_list %}
+                <div class="col-4">
+                    <div class="card shadow-sm">
+                        <div class="card-header">
+                            <h3>{{ blog.tittle }}</h3>
+                        </div>
+                        <img src="{{ blog.image | media_filter }}" alt="Товар">
+                        <div class="card-body">
+                            <p class="card-text">{{ blog.created_at }}</p>
+                            <div class="btn-group">
+                                <a class="p-2 btn btn-outline-dark" href="{% url 'blog:blog_detail' blog.pk %}">Посмотреть</a>
+                                {% if perms.blog.can_edit_publication and perms.blog.can_edit_tittle and perms.blog.can_edit_text and perms.blog.can_edit_image or user == blog.author %}
+                                <a class="p-2 btn btn-outline-dark" href="{% url 'blog:blog_update' blog.pk %}">Редактировать</a>
+                                {% endif %}
+                                {% if user == blog.author %}
+                                <a class="p-2 btn btn-outline-dark"
+                                   href="{% url 'blog:blog_delete' blog.pk %}">Удалить</a>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
 </div>
 
 {% endblock %}

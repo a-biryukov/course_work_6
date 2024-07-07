@@ -2,9 +2,11 @@ import smtplib
 from datetime import datetime, timedelta
 
 from apscheduler.schedulers.background import BackgroundScheduler
+from django.core.cache import cache
 from django.core.mail import send_mail
 
-from config.settings import EMAIL_HOST_USER
+from blog.models import Blog
+from config.settings import EMAIL_HOST_USER, CACHE_ENABLED
 from mailings.models import Mailing, Log
 from users.models import User
 
@@ -100,3 +102,16 @@ def change_date_next_sending(obj) -> None:
     elif obj.periodicity == Mailing.MONTHLY:
         obj.next_sending += timedelta(days=30)
     obj.save()
+
+
+def get_blog_from_cache():
+    """ Получает статьи из кеша, если кеш пуст получает из БД"""
+    if not CACHE_ENABLED:
+        return Blog.objects.order_by('?')[:3]
+
+    key = 'blog_list'
+    blog_list = cache.get(key)
+    if blog_list is None:
+        blog_list = Blog.objects.order_by('?')[:3]
+        cache.set(key, blog_list)
+    return blog_list

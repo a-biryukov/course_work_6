@@ -7,7 +7,7 @@ from django.views.generic import CreateView, TemplateView, ListView, DetailView,
 
 from mailings.forms import MailingForm, MessageForm, ClientForm, MailingModeratorForm
 from mailings.models import Mailing, Message, Client
-from mailings.services import make_status
+from mailings.services import make_status, get_blog_from_cache
 
 
 class MainTemplateView(TemplateView):
@@ -21,6 +21,7 @@ class MainTemplateView(TemplateView):
         context_data['count_mailings'] = count_mailings
         context_data['count_active_mailings'] = count_active_mailings
         context_data['count_unic_clients'] = count_unic_clients
+        context_data['blog_list'] = get_blog_from_cache()
         return context_data
 
 
