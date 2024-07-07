@@ -1,0 +1,46 @@
+{% extends 'mailings/index.html' %}
+{% block content %}
+
+<div class="container mt-4">
+    <div class="col-12">
+        <div class="row">
+            <div class="col-9"></div>
+            <div class="col-3">
+                <a href="{% url 'mailings:message_create' %}" type="submit" class="btn btn-outline-dark">Создать сообщение</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container mt-4">
+    <div class="col-12">
+        <div class="row">
+            <div class="col-1"></div>
+            <div class="col-10">
+                <div class="card text-center">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th scope="col">Заголовок сообщения</th>
+                            <th scope="col">Текст сообщения</th>
+                            <th scope="col"></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for message in object_list %}
+                        <tr>
+                            <td>{{ message.tittle | truncatewords:5 }}</td>
+                            <td>{{ message.text | truncatewords:10 }}</td>
+                            <td><a class="p-2 btn btn-outline-dark" href="{% url 'mailings:message_detail' message.pk %}">Посмотреть</a></td>
+                        </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="col-1"></div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

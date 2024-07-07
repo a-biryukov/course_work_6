@@ -1,0 +1,40 @@
+{% extends 'mailings/index.html' %}
+{% block content %}
+
+<div class="container text-center mt-4">
+    <div class="col-12">
+        <form class="row" method="post" enctype="multipart/form-data">
+            <div class="col-3"></div>
+            <div class="col-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>
+                            {% if object %}
+                            Редактирование контакта
+                            {% else %}
+                            Добавить контакт
+                            {% endif %}
+                        </h3>
+                    </div>
+                    <div class="card-body">
+                        {% csrf_token %}
+                        {{ form.as_p }}
+                        <div class="btn-group">
+                            {% if object %}
+                            <a href="{% url 'mailings:client_list' %}" type="submit" class="btn btn-outline-dark">Назад</a>
+                            {% else %}
+                            <a href="{% url 'mailings:client_list' %}" type="submit" class="btn btn-outline-dark">Назад</a>
+                            {% endif %}
+                            <button type="submit" class="btn btn-outline-dark">Сохранить</button>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                    </div>
+                </div>
+            </div>
+            <div class="col-3"></div>
+        </form>
+    </div>
+</div>
+
+{% endblock %}

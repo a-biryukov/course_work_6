@@ -1,0 +1,27 @@
+{% extends 'mailings/index.html' %}
+{% block content %}
+
+<br>
+<div class="container">
+    <div class="col-12">
+        <div class="row">
+            <div class="col-6">
+                <form class="row" method="post">
+                    <div class="card">
+                        <div class="card-body">
+                            {% csrf_token %}
+                            <h4>Хотите удалить статью "{{ object.tittle }}"?</h4>
+                            <br>
+                            <div class="btn-group">
+                                <button type="submit" class="btn btn-outline-dark">Удалить</button>
+                                <a class="btn btn-outline-dark" href="{% url 'blog:blog_list' %}">Назад</a>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

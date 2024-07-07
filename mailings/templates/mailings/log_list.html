@@ -1,0 +1,40 @@
+{% extends 'mailings/index.html' %}
+{% block content %}
+
+<div class="container mt-4">
+    <div class="col-12">
+        <div class="row">
+            <div class="col-1"></div>
+            <div class="col-10">
+                <div class="card text-center">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th scope="col">Заголовок рассылки</th>
+                            <th scope="col">Дата и время отправки</th>
+                            <th scope="col">Статус</th>
+                            <th scope="col"></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for log in object_list %}
+                            <tr>
+                                <td>{{ log.mailing.message.tittle | truncatewords:5 }}</td>
+                                <td>{{ log.time }}</td>
+                                {% if log.status == True %}
+                                <td>Успешно</td>
+                                {% else %}
+                                <td>Не отправлено</td>
+                                {% endif %}
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="col-1"></div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
