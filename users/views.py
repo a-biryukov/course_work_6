@@ -13,9 +13,8 @@ class UserListView(ListView):
     model = User
 
     def get_queryset(self, *args, **kwargs):
-        user = self.request.user
         queryset = super().get_queryset(*args, **kwargs)
-        queryset = queryset.exclude(pk=user.pk)
+        queryset = queryset.filter(is_staff=False, is_superuser=False)
         return queryset
 
 
