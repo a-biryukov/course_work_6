@@ -30,13 +30,6 @@
                             <p class="card-text">{{ blog.created_at }}</p>
                             <div class="btn-group">
                                 <a class="p-2 btn btn-outline-dark" href="{% url 'blog:blog_detail' blog.pk %}">Посмотреть</a>
-                                {% if perms.blog.can_edit_publication and perms.blog.can_edit_tittle and perms.blog.can_edit_text and perms.blog.can_edit_image or user == blog.author %}
-                                <a class="p-2 btn btn-outline-dark" href="{% url 'blog:blog_update' blog.pk %}">Редактировать</a>
-                                {% endif %}
-                                {% if user == blog.author %}
-                                <a class="p-2 btn btn-outline-dark"
-                                   href="{% url 'blog:blog_delete' blog.pk %}">Удалить</a>
-                                {% endif %}
                             </div>
                         </div>
                         <div class="card-footer">
