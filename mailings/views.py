@@ -7,6 +7,7 @@ from django.views.generic import CreateView, TemplateView, ListView, DetailView,
 
 from mailings.forms import MailingForm, MessageForm, ClientForm, MailingModeratorForm
 from mailings.models import Mailing, Message, Client
+from mailings.services import make_status
 
 
 class MainTemplateView(TemplateView):
@@ -41,15 +42,15 @@ class MailingCreateView(LoginRequiredMixin, CreateView):
 
     def form_valid(self, form):
         if form.is_valid():
-            new_mailing = form.save()
+            mailing = form.save()
             user = self.request.user
-            new_mailing.owner = user
-            new_mailing.status = Mailing.CREATED
-            if new_mailing.time_sending <= datetime.now().time() and new_mailing.start_mailing == datetime.now().date():
-                new_mailing.next_sending = new_mailing.start_mailing + timedelta(days=1)
+            mailing.owner = user
+            make_status(mailing)
+            if mailing.time_sending <= datetime.now().time() and mailing.start_mailing == datetime.now().date():
+                mailing.next_sending = mailing.start_mailing + timedelta(days=1)
             else:
-                new_mailing.next_sending = new_mailing.start_mailing
-            new_mailing.save()
+                mailing.next_sending = mailing.start_mailing
+            mailing.save()
             return super().form_valid(form)
 
 
@@ -85,6 +86,7 @@ class MailingUpdateView(LoginRequiredMixin, UpdateView):
         elif mailing.end_mailing >= datetime.now().date() <= mailing.start_mailing:
             mailing.next_sending = mailing.start_mailing
         mailing.save()
+        make_status(mailing)
         return super().form_valid(form)
 
 
@@ -128,7 +130,7 @@ class MessageDetailView(LoginRequiredMixin, DetailView):
 
     def get_object(self, queryset=None):
         self.object = super().get_object(queryset)
-        if self.request.user == self.object.owner or self.request.user.is_superuser:
+        if self.request.user == self.object.owner:
             return self.object
         raise PermissionDenied
 
@@ -182,10 +184,22 @@ class ClientCreateView(LoginRequiredMixin, CreateView):
             return super().form_valid(form)
 
 
+class ClientDetailView(LoginRequiredMixin, DetailView):
+    model = Client
+
+    def get_object(self, queryset=None):
+        self.object = super().get_object(queryset)
+        if self.request.user == self.object.owner:
+            return self.object
+        raise PermissionDenied
+
+
 class ClientUpdateView(LoginRequiredMixin, UpdateView):
     model = Client
     form_class = ClientForm
-    success_url = reverse_lazy('mailings:client_list')
+
+    def get_success_url(self):
+        return reverse('mailings:client_detail', args=[self.kwargs.get('pk')])
 
     def get_form_class(self):
         user = self.request.user
