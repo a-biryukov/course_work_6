@@ -86,6 +86,8 @@ def make_status(obj) -> None:
         obj.status = Mailing.STARTED
     elif end_date == current_date and current_time > time_sending or current_date > end_date:
         obj.status = Mailing.COMPLETED
+    else:
+        obj.status = Mailing.CREATED
     obj.save()
 
 
