@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+from itertools import chain
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import PermissionDenied
@@ -6,7 +7,7 @@ from django.urls import reverse_lazy, reverse
 from django.views.generic import CreateView, TemplateView, ListView, DetailView, DeleteView, UpdateView
 
 from mailings.forms import MailingForm, MessageForm, ClientForm, MailingModeratorForm
-from mailings.models import Mailing, Message, Client
+from mailings.models import Mailing, Message, Client, Log
 from mailings.services import make_status, get_blog_from_cache
 
 
@@ -52,6 +53,7 @@ class MailingCreateView(LoginRequiredMixin, CreateView):
             else:
                 mailing.next_sending = mailing.start_mailing
             mailing.save()
+            print(self.request)
             return super().form_valid(form)
 
 
@@ -218,3 +220,13 @@ class ClientDeleteView(LoginRequiredMixin, DeleteView):
         if self.request.user == self.object.owner or self.request.user.is_superuser:
             return self.object
         raise PermissionDenied
+
+
+class LogListView(LoginRequiredMixin, ListView):
+    model = Log
+
+    def get_queryset(self, *args, **kwargs):
+        user = self.request.user
+        queryset = super().get_queryset(*args, **kwargs)
+        queryset = queryset.filter(mailing__owner=user.pk).order_by('time')
+        return queryset
