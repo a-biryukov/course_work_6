@@ -55,7 +55,7 @@ class Mailing(models.Model):
         (STARTED, 'Запущена'),
     ]
 
-    start_mailing = models.DateField(verbose_name='Дата начала рассылки', default=timezone.now())
+    start_mailing = models.DateField(verbose_name='Дата начала рассылки', default=timezone.now)
     end_mailing = models.DateField(
         verbose_name='Дата окончания рассылки',
         default=date.today() + timedelta(weeks=52, days=1)
