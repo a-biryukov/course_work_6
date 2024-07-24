@@ -1,4 +1,4 @@
-from django.contrib.auth.forms import UserCreationForm, UserChangeForm
+from django.contrib.auth.forms import UserCreationForm, UserChangeForm, AuthenticationForm
 from django import forms
 
 from mailings.forms import StyleFormMixin
@@ -28,3 +28,7 @@ class UserModeratorUpdateForm(StyleFormMixin, UserChangeForm):
 
 class PasswordRecoveryForm(StyleFormMixin, forms.Form):
     email = forms.EmailField(max_length=255)
+
+
+class UserAuthenticationForm(StyleFormMixin, AuthenticationForm):
+    pass
