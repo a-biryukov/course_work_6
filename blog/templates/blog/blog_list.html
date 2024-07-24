@@ -15,29 +15,28 @@
     </div>
 </div>
 
-<div class="album py-5 bg-body-tertiary">
-    <div class="container text-center">
-        <div class="col-12">
-            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
-                {% for blog in object_list %}
-                <div class="col-4">
-                    <div class="card shadow-sm">
-                        <div class="card-header">
-                            <h3>{{ blog.tittle }}</h3>
-                        </div>
-                        <img src="{{ blog.image | media_filter }}" alt="Товар">
-                        <div class="card-body">
-                            <p class="card-text">{{ blog.created_at }}</p>
-                            <div class="btn-group">
-                                <a class="p-2 btn btn-outline-dark" href="{% url 'blog:blog_detail' blog.pk %}">Посмотреть</a>
-                            </div>
-                        </div>
-                        <div class="card-footer">
+<div class="container text-center mt-4">
+    <div class="col-12">
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+            {% for blog in object_list %}
+            <div class="col-4">
+                <div class="card shadow-sm">
+                    <div class="card-header">
+                        <h3>{{ blog.tittle }}</h3>
+                    </div>
+                    <img src="{{ blog.image | media_filter }}" alt="Товар">
+                    <div class="card-body">
+                        <p class="card-text">{{ blog.created_at }}</p>
+                        <div class="btn-group">
+                            <a class="p-2 btn btn-outline-dark"
+                               href="{% url 'blog:blog_detail' blog.pk %}">Посмотреть</a>
                         </div>
                     </div>
+                    <div class="card-footer">
+                    </div>
                 </div>
-                {% endfor %}
             </div>
+            {% endfor %}
         </div>
     </div>
 </div>
