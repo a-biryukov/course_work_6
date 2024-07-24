@@ -15,9 +15,17 @@ class StyleFormMixin:
 
 
 class MailingForm(StyleFormMixin, ModelForm):
+
     class Meta:
         model = Mailing
         exclude = ('owner', 'status', 'next_sending', 'is_active')
+
+    def __init__(self, *args, **kwargs):
+        self.request = kwargs.pop('request')
+        user = self.request.user
+        super().__init__(*args, **kwargs)
+        self.fields['clients'].queryset = Client.objects.filter(owner=user)
+        self.fields['message'].queryset = Message.objects.filter(owner=user)
 
 
 class MailingModeratorForm(StyleFormMixin, ModelForm):

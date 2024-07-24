@@ -39,6 +39,11 @@ class MailingCreateView(LoginRequiredMixin, CreateView):
     form_class = MailingForm
     success_url = reverse_lazy('mailings:mailing_list')
 
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs.update({'request': self.request})
+        return kwargs
+
     def form_valid(self, form):
         if form.is_valid():
             mailing = form.save()
@@ -81,6 +86,11 @@ class MailingUpdateView(LoginRequiredMixin, UpdateView):
         mailing.status = get_status(mailing)
         mailing.save()
         return super().form_valid(form)
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs.update({'request': self.request})
+        return kwargs
 
 
 class MailingDeleteView(LoginRequiredMixin, DeleteView):

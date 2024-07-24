@@ -70,7 +70,7 @@ def send_mailing() -> None:
                 server_response = e
                 status = False
             else:
-                mailing.next_sending = change_date_next_sending(mailing)
+                mailing.next_sending = get_next_sending(mailing)
                 status = True
             finally:
                 Log.objects.create(status=status, server_response=server_response, mailing=mailing)
@@ -98,8 +98,8 @@ def get_status(obj) -> str:
         return Mailing.CREATED
 
 
-def change_date_next_sending(obj):
-    """Меняет дату следующей отправки в зависимости от выбранной пользователем периодичности"""
+def get_next_sending(obj):
+    """Возвращает дату в зависимости от выбранной пользователем периодичности"""
     if obj.periodicity == Mailing.DAILY:
         return obj.next_sending + timedelta(days=1)
     elif obj.periodicity == Mailing.WEEKLY:
