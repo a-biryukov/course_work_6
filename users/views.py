@@ -1,11 +1,13 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.views import LoginView
 from django.core.exceptions import PermissionDenied
 from django.shortcuts import redirect, get_object_or_404
 from django.urls import reverse_lazy, reverse
 from django.views.generic import CreateView, TemplateView, DetailView, UpdateView, DeleteView, ListView
 
 from mailings.services import email_send
-from users.forms import UserRegisterForm, UserUpdateForm, PasswordRecoveryForm, UserModeratorUpdateForm
+from users.forms import UserRegisterForm, UserUpdateForm, PasswordRecoveryForm, UserModeratorUpdateForm, \
+    UserAuthenticationForm
 from users.models import User
 
 
@@ -89,6 +91,10 @@ class PasswordRecoveryTemplateView(TemplateView):
         context_data = super().get_context_data(**kwargs)
         context_data["form"] = self.form_class
         return context_data
+
+
+class UserLoginView(LoginView):
+    form_class = UserAuthenticationForm
 
 
 def email_verification(request, token):
