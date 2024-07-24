@@ -7,7 +7,7 @@
 + Создть и применить мигации 
   + python manage.py makemigrations
   + python manage.py migrate
-+ Заполнить фикстурами, которые лежав в папки fixtures
++ Заполнить фикстурами, которые лежат в папке fixtures
   + python manage.py loaddata fixtures/blog_data.json
   + python manage.py loaddata fixtures/mailings_data.json
   + python manage.py loaddata fixtures/auth_data.json
